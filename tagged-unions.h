@@ -67,7 +67,7 @@
 #define MAP_LIST(f, ...) EVAL(MAP_LIST1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
 
 /*
- * Copyright (C) 2020 Eric Lawless
+ * Copyright (C) 2021 Eric Lawless
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -153,7 +153,7 @@
 
 #define TAGGED_UNION_MATCH_FUNCTION_SWITCH_CASE2(UnionName, StateName) \
     case E##UnionName##State::StateName: \
-        return std::forward<Fn##StateName>(Handle##StateName)(Connection.Value.StateName);
+        return std::forward<Fn##StateName>(Handle##StateName)(UnionName.Value.StateName);
 
 #define TAGGED_UNION_MATCH_FUNCTION_SWITCH_CASE1(...) \
     TAGGED_UNION_MATCH_FUNCTION_SWITCH_CASE2(__VA_ARGS__)
@@ -189,8 +189,11 @@
 #define TAGGED_UNION_VALUE_STRUCT(ConstructType, UnionName, ...) \
     struct F##UnionName; \
     ConstructType F##UnionName##Value { \
+    public: \
+        F##UnionName##Value() {} \
+        ~F##UnionName##Value() = default; \
+        F##UnionName##Value(const F##UnionName##Value&) = default; \
     private: \
-        F##UnionName##Value() {}; \
         MAP_WITH(TAGGED_UNION_VALUE_STRUCT_MEMBER, UnionName, __VA_ARGS__) \
         friend struct F##UnionName; \
         template <typename T, MAP_LIST(TAGGED_UNION_MATCH_FUNCTION_TYPENAME, __VA_ARGS__)> \
