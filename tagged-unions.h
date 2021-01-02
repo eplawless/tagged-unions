@@ -118,7 +118,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #define TAGGED_UNION_STATE_STRUCT2(UnionName, StateName, StateBody) \
-    struct F##UnionName##_##StateName StateBody;
+    struct UnionName##_##StateName StateBody;
 
 #define TAGGED_UNION_STATE_STRUCT1(...) \
     EXPAND(TAGGED_UNION_STATE_STRUCT2(__VA_ARGS__))
@@ -164,7 +164,7 @@
 #define TAGGED_UNION_MATCH_FUNCTION(UnionName, ...) \
     template <typename T, MAP_LIST(TAGGED_UNION_MATCH_FUNCTION_TYPENAME, __VA_ARGS__)> \
     T Match( \
-        const F##UnionName &UnionName, \
+        const UnionName &UnionName, \
         MAP_LIST(TAGGED_UNION_MATCH_FUNCTION_ARG, __VA_ARGS__) \
     ) { \
         switch (UnionName.State) \
@@ -178,7 +178,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #define TAGGED_UNION_VALUE_STRUCT_MEMBER2(UnionName, StateName, StateBody) \
-    F##UnionName##_##StateName StateName;
+    UnionName##_##StateName StateName;
 
 #define TAGGED_UNION_VALUE_STRUCT_MEMBER1(...) \
     EXPAND(TAGGED_UNION_VALUE_STRUCT_MEMBER2(__VA_ARGS__))
@@ -187,18 +187,18 @@
     TAGGED_UNION_VALUE_STRUCT_MEMBER1(UnionName, STATE_NAME(State), STATE_BODY(State))
 
 #define TAGGED_UNION_VALUE_STRUCT(ConstructType, UnionName, ...) \
-    struct F##UnionName; \
-    ConstructType F##UnionName##Value { \
+    struct UnionName; \
+    ConstructType UnionName##Value { \
     public: \
-        F##UnionName##Value() {} \
-        ~F##UnionName##Value() = default; \
-        F##UnionName##Value(const F##UnionName##Value&) = default; \
+        UnionName##Value() {} \
+        ~UnionName##Value() = default; \
+        UnionName##Value(const UnionName##Value&) = default; \
     private: \
         MAP_WITH(TAGGED_UNION_VALUE_STRUCT_MEMBER, UnionName, __VA_ARGS__) \
-        friend struct F##UnionName; \
+        friend struct UnionName; \
         template <typename T, MAP_LIST(TAGGED_UNION_MATCH_FUNCTION_TYPENAME, __VA_ARGS__)> \
         friend T Match( \
-            const F##UnionName &UnionName, \
+            const UnionName &UnionName, \
             MAP_LIST(TAGGED_UNION_MATCH_FUNCTION_ARG, __VA_ARGS__) \
         ); \
     };
@@ -208,7 +208,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #define TAGGED_UNION_CONTAINER_TYPE_CONSTRUCTOR2(UnionName, StateName) \
-    F##UnionName(const F##UnionName##_##StateName& StateName) { \
+    UnionName(const UnionName##_##StateName& StateName) { \
         State = E##UnionName##State::StateName; \
         Value.StateName = StateName; \
     }
@@ -221,9 +221,9 @@
 
 
 #define TAGGED_UNION_CONTAINER_TYPE(UnionName, ...) \
-    struct F##UnionName { \
+    struct UnionName { \
         E##UnionName##State State; \
-        F##UnionName##Value Value; \
+        UnionName##Value Value; \
         MAP_WITH(TAGGED_UNION_CONTAINER_TYPE_CONSTRUCTOR, UnionName, __VA_ARGS__) \
     };
 

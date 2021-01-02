@@ -14,17 +14,17 @@ TAGGED_STRUCT(CharacterStats,
     })
 )
 
-int GetLevel(const FCharacterStats& Character) {
+int GetLevel(const CharacterStats& Character) {
     auto GenericGetLevel = [](const auto& Stats) { return Stats.Level; };
     return Match<int>(Character, GenericGetLevel, GenericGetLevel);
 }
 
-void PrintGreeting(const FCharacterStats& Character) {
+void PrintGreeting(const CharacterStats& Character) {
     std::cout << Match<std::string>(Character,
-        +[](const FCharacterStats_Rogue& Rogue) -> std::string {
+        +[](const CharacterStats_Rogue& Rogue) -> std::string {
             return "Good job being a rogue!";
         },
-        [](const FCharacterStats_Warrior& Warrior) -> std::string {
+        [](const CharacterStats_Warrior& Warrior) -> std::string {
             std::stringstream ss;
             ss << "Good job being a warrior, " << Warrior.CoolNickname << "!\n";
             return ss.str();
@@ -32,11 +32,11 @@ void PrintGreeting(const FCharacterStats& Character) {
 }
 
 int main(int argc, char **argv) {
-    FCharacterStats Character1 = FCharacterStats_Rogue {
+    CharacterStats Character1 = CharacterStats_Rogue {
         .Level = 10,
         .BackstabCount = 9999
     };
-    FCharacterStats Character2 = FCharacterStats_Warrior {
+    CharacterStats Character2 = CharacterStats_Warrior {
         .Level = 20,
         .CoolNickname = "Dave"
     };

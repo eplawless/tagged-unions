@@ -16,48 +16,48 @@ TAGGED_UNION(Connection,
     })
 )
 
-void Handle(const FConnection &Connection) {
+void Handle(const Connection &Connection) {
     // NOTE: You can't access e.g. Connection.Value.Connected here, it's private.
     // You have to go through the Match function, which prevents people from
     // ever accessing the wrong union member.
     Match<void>(Connection,
-        [](const FConnection_Disconnected &Members) {
+        [](const Connection_Disconnected &Members) {
             std::cout << "Disconnected (last time " << Members.LastConnectionTime << ")\n";
         },
-        +[](const FConnection_Connecting &Members) {
+        +[](const Connection_Connecting &Members) {
             std::cout << "Connecting to " << Members.URL 
                 << " (last time " << Members.LastConnectionTime 
                 << ", started " << Members.ConnectionStartTime << ")\n";
         },
-        [](const FConnection_Connected &Members) {
+        [](const Connection_Connected &Members) {
             std::cout << "Connected to " << Members.URL 
                 << " (last time " << Members.LastConnectionTime << ")\n";
         });
 }
 
-int GetLastConnectionTime(const FConnection &Connection) {
+int GetLastConnectionTime(const Connection &Connection) {
     auto Handler = [](const auto &Value) -> int { return Value.LastConnectionTime; };
     return Match<int>(Connection, Handler, Handler, Handler);
 }
 
 int main(int argc, char **argv) {
-    Handle(FConnection_Disconnected {
+    Handle(Connection_Disconnected {
         .LastConnectionTime = 20
     });
-    Handle(FConnection_Connecting {
+    Handle(Connection_Connecting {
         .LastConnectionTime = 20,
         .ConnectionStartTime = 30,
         .URL = "google.com"
     });
-    Handle(FConnection_Connected {
+    Handle(Connection_Connected {
         .LastConnectionTime = 40,
         .URL = "google.com"
     });
 
-    int PrevConnectionTime = GetLastConnectionTime(FConnection_Disconnected {
+    int PrevConnectionTime = GetLastConnectionTime(Connection_Disconnected {
         .LastConnectionTime = 20
     });
-    int ConnectionTime = GetLastConnectionTime(FConnection_Connected {
+    int ConnectionTime = GetLastConnectionTime(Connection_Connected {
         .LastConnectionTime = 40,
         .URL = "google.com"
     });
