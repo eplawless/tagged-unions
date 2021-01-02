@@ -219,12 +219,22 @@
 #define TAGGED_UNION_CONTAINER_TYPE_CONSTRUCTOR(UnionName, State) \
     TAGGED_UNION_CONTAINER_TYPE_CONSTRUCTOR1(UnionName, STATE_NAME(State))
 
+#define TAGGED_UNION_CONTAINER_TYPE_STATE_ALIAS2(UnionName, StateName) \
+    using StateName = UnionName##_##StateName;
+
+#define TAGGED_UNION_CONTAINER_TYPE_STATE_ALIAS1(...) \
+    EXPAND(TAGGED_UNION_CONTAINER_TYPE_STATE_ALIAS2(__VA_ARGS__))
+
+#define TAGGED_UNION_CONTAINER_TYPE_STATE_ALIAS(UnionName, State) \
+    TAGGED_UNION_CONTAINER_TYPE_STATE_ALIAS1(UnionName, STATE_NAME(State))
+
 
 #define TAGGED_UNION_CONTAINER_TYPE(UnionName, ...) \
     struct UnionName { \
         E##UnionName##State State; \
         UnionName##Value Value; \
         MAP_WITH(TAGGED_UNION_CONTAINER_TYPE_CONSTRUCTOR, UnionName, __VA_ARGS__) \
+        MAP_WITH(TAGGED_UNION_CONTAINER_TYPE_STATE_ALIAS, UnionName, __VA_ARGS__) \
     };
 
 ///////////////////////////////////////////////////////////////////////////////

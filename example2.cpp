@@ -21,10 +21,10 @@ int GetLevel(const CharacterStats& Character) {
 
 void PrintGreeting(const CharacterStats& Character) {
     std::cout << Match<std::string>(Character,
-        +[](const CharacterStats_Rogue& Rogue) -> std::string {
+        +[](const CharacterStats::Rogue& Rogue) -> std::string {
             return "Good job being a rogue!";
         },
-        [](const CharacterStats_Warrior& Warrior) -> std::string {
+        [](const CharacterStats::Warrior& Warrior) -> std::string {
             std::stringstream ss;
             ss << "Good job being a warrior, " << Warrior.CoolNickname << "!\n";
             return ss.str();
@@ -32,11 +32,11 @@ void PrintGreeting(const CharacterStats& Character) {
 }
 
 int main(int argc, char **argv) {
-    CharacterStats Character1 = CharacterStats_Rogue {
+    CharacterStats Character1 = CharacterStats::Rogue {
         .Level = 10,
         .BackstabCount = 9999
     };
-    CharacterStats Character2 = CharacterStats_Warrior {
+    CharacterStats Character2 = CharacterStats::Warrior {
         .Level = 20,
         .CoolNickname = "Dave"
     };

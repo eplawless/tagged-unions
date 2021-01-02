@@ -21,15 +21,15 @@ void Handle(const Connection &Connection) {
     // You have to go through the Match function, which prevents people from
     // ever accessing the wrong union member.
     Match<void>(Connection,
-        [](const Connection_Disconnected &Members) {
+        [](const Connection::Disconnected &Members) {
             std::cout << "Disconnected (last time " << Members.LastConnectionTime << ")\n";
         },
-        +[](const Connection_Connecting &Members) {
+        +[](const Connection::Connecting &Members) {
             std::cout << "Connecting to " << Members.URL 
                 << " (last time " << Members.LastConnectionTime 
                 << ", started " << Members.ConnectionStartTime << ")\n";
         },
-        [](const Connection_Connected &Members) {
+        [](const Connection::Connected &Members) {
             std::cout << "Connected to " << Members.URL 
                 << " (last time " << Members.LastConnectionTime << ")\n";
         });
@@ -41,23 +41,23 @@ int GetLastConnectionTime(const Connection &Connection) {
 }
 
 int main(int argc, char **argv) {
-    Handle(Connection_Disconnected {
+    Handle(Connection::Disconnected {
         .LastConnectionTime = 20
     });
-    Handle(Connection_Connecting {
+    Handle(Connection::Connecting {
         .LastConnectionTime = 20,
         .ConnectionStartTime = 30,
         .URL = "google.com"
     });
-    Handle(Connection_Connected {
+    Handle(Connection::Connected {
         .LastConnectionTime = 40,
         .URL = "google.com"
     });
 
-    int PrevConnectionTime = GetLastConnectionTime(Connection_Disconnected {
+    int PrevConnectionTime = GetLastConnectionTime(Connection::Disconnected {
         .LastConnectionTime = 20
     });
-    int ConnectionTime = GetLastConnectionTime(Connection_Connected {
+    int ConnectionTime = GetLastConnectionTime(Connection::Connected {
         .LastConnectionTime = 40,
         .URL = "google.com"
     });
